@@ -35,7 +35,10 @@ public class RoomMng : Photon.MonoBehaviour {
     public void SpawnPlayer()
     {
         GameObject player = PhotonNetwork.Instantiate(playerPref.name, spawnPts.position, spawnPts.rotation, 0) as GameObject;
+        Debug.Log(playerPref.name);
         CharacterController controller = player.GetComponent<CharacterController>();
+        UnityStandardAssets.Characters.FirstPerson.FirstPersonController firstPerson = player.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>();
+        firstPerson.enabled = true;
         Camera cam = player.GetComponentInChildren<Camera>();
         controller.enabled = true;
         cam.enabled = true;
