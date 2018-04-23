@@ -29,6 +29,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
         [SerializeField] private Animator anim;
 
+
         private Camera m_Camera;
         private bool m_Jump;
         private float m_YRotation;
@@ -82,7 +83,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             float v = Input.GetAxis("Vertical");
-            anim.SetFloat("Velocity", v);
+            float h = Input.GetAxis("Horizontal");
+            float v_abs = Mathf.Abs(v);
+            float h_abs = Mathf.Abs(h);
+            anim.SetFloat("Velocity", v_abs + h_abs);
 
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
         }

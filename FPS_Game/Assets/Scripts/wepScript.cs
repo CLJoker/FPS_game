@@ -35,7 +35,7 @@ public class wepScript : MonoBehaviour {
             }
             GameObject par;
             par = PhotonNetwork.Instantiate(hitPar.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
-            Destroy(par, 2f);
+            Destroy(par, 1f);
             Debug.Log(hit.transform.name);
         }
     }
