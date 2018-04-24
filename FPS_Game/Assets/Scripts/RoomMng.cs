@@ -1,46 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon;
+using UnityStandardAssets.Characters.FirstPerson;
 
-public class RoomMng : Photon.MonoBehaviour {
+using ExitGames.Client.Photon;
 
-    public string verNum = "0.0.1";
-    public string roomName = "TestRoom";
+public class RoomMng : PunBehaviour
+{
     public Transform spawnPts;
     public GameObject playerPref;
     public bool isConnected = false;
     public RoomOptions roomOps;
     public TypedLobby typeLobby;
+    [HideInInspector]
+    public PhotonAnimatorView m_AnimatorView;
 
+    #region Photon
 
-    void Start()
+    public override void OnJoinedRoom()
     {
-        PhotonNetwork.ConnectUsingSettings(verNum);
-        Debug.Log("Start connecting...");
-    }
-
-    public void OnJoinedLobby()
-    {
-        PhotonNetwork.JoinOrCreateRoom(roomName, null, null);
+        CreatePlayerObject();
 
     }
-
-    public void OnJoinedRoom()
-    {
-        isConnected = true;
-        SpawnPlayer();
-        Debug.Log("Connected !");
-    }
-
-    public void SpawnPlayer()
+   
+    private void CreatePlayerObject()
     {
         GameObject player = PhotonNetwork.Instantiate(playerPref.name, spawnPts.position, spawnPts.rotation, 0) as GameObject;
-        Debug.Log(playerPref.name);
-        CharacterController controller = player.GetComponent<CharacterController>();
-        UnityStandardAssets.Characters.FirstPerson.FirstPersonController firstPerson = player.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>();
-        firstPerson.enabled = true;
+        m_AnimatorView = player.GetComponentInChildren<PhotonAnimatorView>();
+
+        CharacterController characterController = player.GetComponent<CharacterController>();
+        FirstPersonController firstPersonController = player.GetComponent<FirstPersonController>();
+        Animator animator = player.GetComponent<Animator>();
         Camera cam = player.GetComponentInChildren<Camera>();
-        controller.enabled = true;
+
+
+
+        characterController.enabled = true;
+        firstPersonController.enabled = true;
+        animator.enabled = true;
         cam.enabled = true;
     }
+
+    #endregion
 }

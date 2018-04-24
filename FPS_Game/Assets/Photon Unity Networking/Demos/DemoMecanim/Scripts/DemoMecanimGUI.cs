@@ -89,7 +89,7 @@ public class DemoMecanimGUI : PunBehaviour
             {
                 parameters += "Send Values:\n";
 
-                for( int i = 0; i < m_AnimatorView.GetSynchronizedParameters().Count; ++i )
+             for( int i = 0; i < m_AnimatorView.GetSynchronizedParameters().Count; ++i )
                 {
                     PhotonAnimatorView.SynchronizedParameter parameter = m_AnimatorView.GetSynchronizedParameters()[ i ];
                     

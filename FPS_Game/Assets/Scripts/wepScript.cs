@@ -22,7 +22,6 @@ public class wepScript : MonoBehaviour {
         RaycastHit hit;
 
         Ray ray = fpsCam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        Debug.Log("shoot!");
 
         if(Physics.Raycast(ray, out hit,range))
         {
@@ -35,8 +34,6 @@ public class wepScript : MonoBehaviour {
             }
             GameObject par;
             par = PhotonNetwork.Instantiate(hitPar.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
-            Destroy(par, 1f);
-            Debug.Log(hit.transform.name);
         }
     }
 }

@@ -28,6 +28,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
         [SerializeField] private Animator anim;
+        PhotonAnimatorView m_animatorView;
+        private float velocity;
 
 
         private Camera m_Camera;
@@ -57,12 +59,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+            m_PhotonView = GetComponent<PhotonView>();
+            m_animatorView = GetComponent<PhotonAnimatorView>();
         }
+        protected PhotonView m_PhotonView;
 
 
         // Update is called once per frame
         private void Update()
         {
+            if (m_PhotonView.isMine == false && PhotonNetwork.connected == true)
+            {
+                return;
+            }
+
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -263,5 +274,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
+
+        
     }
 }
