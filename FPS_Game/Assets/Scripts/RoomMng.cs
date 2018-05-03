@@ -29,14 +29,14 @@ public class RoomMng : PunBehaviour
         GameObject player = PhotonNetwork.Instantiate(playerPref.name, spawnPts.position, spawnPts.rotation, 0) as GameObject;
         m_AnimatorView = player.GetComponentInChildren<PhotonAnimatorView>();
 
-        CharacterController characterController = player.GetComponent<CharacterController>();
+        //CharacterController characterController = player.GetComponent<CharacterController>();
         FirstPersonController firstPersonController = player.GetComponent<FirstPersonController>();
         Animator animator = player.GetComponent<Animator>();
         Camera cam = player.GetComponentInChildren<Camera>();
+        HealthMng healthMng = player.GetComponent<HealthMng>();
 
-
-
-        characterController.enabled = true;
+        //characterController.enabled = true;
+        healthMng.enabled = true;
         firstPersonController.enabled = true;
         animator.enabled = true;
         cam.enabled = true;

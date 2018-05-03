@@ -7,7 +7,7 @@ public class wepScript : MonoBehaviour {
     public Camera fpsCam;
     public GameObject hitPar;
     public int damage = 30;
-    public int range = 10000;
+    public int range = 1000;
     [SerializeField] private Animator anim;
     private PhotonView photonView;
 
@@ -21,18 +21,15 @@ public class wepScript : MonoBehaviour {
 
     private void Update()
     {
-        if(photonView.isMine)
+        if (Input.GetMouseButton(0))
         {
-            if (Input.GetMouseButton(0))
-            {
-                FireShot();
+            FireShot();
 
-            }
+        }
 
-            if (fireTimer < fireRate)
-            {
-                fireTimer += Time.deltaTime;
-            }
+        if (fireTimer < fireRate)
+        {
+            fireTimer += Time.deltaTime;
         }
         
     }
@@ -54,22 +51,23 @@ public class wepScript : MonoBehaviour {
 
         Ray ray = fpsCam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
-        if(Physics.Raycast(ray, out hit,range))
+        if (Physics.Raycast(ray, out hit, range))
         {
-
-
-            if(hit.transform.tag == "Soldier_Player")
+            if (photonView.isMine)
             {
-                hit.transform.GetComponent<PhotonView>().RPC("applyDamage", PhotonTargets.All, damage);
+                GameObject par = PhotonNetwork.Instantiate(hitPar.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
             }
-            GameObject par;
+            if (hit.transform != null && LayerMask.LayerToName(hit.transform.gameObject.layer) == "Player")
+            {
+                hit.transform.GetComponent<PhotonView>().RPC("ApplyDamage", PhotonTargets.AllBuffered, damage);
+            }
 
-            
-            par = PhotonNetwork.Instantiate(hitPar.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
         }
 
         anim.SetBool("Firing", true);
 
         fireTimer = 0.0f;
+
+        //Debug.Log(hit.transform.name);
     }
 }

@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class NetworkPlayer : Photon.MonoBehaviour {
 
-    private Animator anim;
 	// Use this for initialization
 	void Awake()
     {
-        anim = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame
@@ -21,12 +19,12 @@ public class NetworkPlayer : Photon.MonoBehaviour {
         if (stream.isWriting)
         {
             //We own this player: send the others our data
-            stream.SendNext(anim.GetFloat("Velocity"));
+            //stream.SendNext(anim.GetFloat("Velocity"));
         }
         else
         {
             //Network player, receive data
-            anim.SetFloat("Velocity", (float)stream.ReceiveNext());
+            //anim.SetFloat("Velocity", (float)stream.ReceiveNext());
         }
     }
 }
