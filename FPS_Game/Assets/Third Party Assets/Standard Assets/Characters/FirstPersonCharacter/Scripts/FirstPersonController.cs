@@ -27,10 +27,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
-        [SerializeField] private Animator anim;
-        PhotonAnimatorView m_animatorView;
-        private float velocity;
-
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -59,21 +55,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
-
-            m_PhotonView = GetComponent<PhotonView>();
-            m_animatorView = GetComponent<PhotonAnimatorView>();
         }
-        protected PhotonView m_PhotonView;
 
 
         // Update is called once per frame
         private void Update()
         {
-            if (m_PhotonView.isMine == false && PhotonNetwork.connected == true)
-            {
-                return;
-            }
-
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -92,12 +79,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_MoveDir.y = 0f;
             }
-
-            float v = Input.GetAxis("Vertical");
-            float h = Input.GetAxis("Horizontal");
-            float v_abs = Mathf.Abs(v);
-            float h_abs = Mathf.Abs(h);
-            anim.SetFloat("Velocity", v_abs + h_abs);
 
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
         }
@@ -121,7 +102,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
             Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
-                               m_CharacterController.height/2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                               m_CharacterController.height/2f);
             desiredMove = Vector3.ProjectOnPlane(desiredMove, hitInfo.normal).normalized;
 
             m_MoveDir.x = desiredMove.x*speed;
@@ -148,8 +129,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
-
-            m_MouseLook.UpdateCursorLock();
         }
 
 
@@ -274,7 +253,5 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
-
-        
     }
 }

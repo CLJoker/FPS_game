@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class wepScript : MonoBehaviour {
 
-    public Camera fpsCam;
-    public GameObject hitPar;
-    public int damage = 30;
-    public int range = 1000;
+    [SerializeField] private Camera fpsCam;
+    [SerializeField] private GameObject bulletHole;
+    //[SerializeField] private GameObject bulletSpark;
+    [SerializeField] private int damage = 30;
+    [SerializeField] private int range = 1000;
     [SerializeField] private Animator anim;
-    private PhotonView photonView;
+    [SerializeField] private float fireRate = 0.1f;
 
-    public float fireRate = 0.1f;
-    float fireTimer;
+    private PhotonView photonView;
+    private float fireTimer;
 
     private void Start()
     {
@@ -55,13 +56,13 @@ public class wepScript : MonoBehaviour {
         {
             if (photonView.isMine)
             {
-                GameObject par = PhotonNetwork.Instantiate(hitPar.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
+                GameObject bulletImpactHole = PhotonNetwork.Instantiate(bulletHole.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
             }
             if (hit.transform != null && LayerMask.LayerToName(hit.transform.gameObject.layer) == "Player")
             {
                 hit.transform.GetComponent<PhotonView>().RPC("ApplyDamage", PhotonTargets.AllBuffered, damage);
             }
-
+            //GameObject bulletImpactEffect = PhotonNetwork.Instantiate(bulletSpark.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
         }
 
         anim.SetBool("Firing", true);
