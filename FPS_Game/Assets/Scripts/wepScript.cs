@@ -11,6 +11,7 @@ public class wepScript : MonoBehaviour {
     [SerializeField] private int range = 1000;
     [SerializeField] private Animator anim;
     [SerializeField] private float fireRate = 0.1f;
+    [SerializeField] private GameObject muzzleFlash;
 
     private PhotonView photonView;
     private float fireTimer;
@@ -22,10 +23,15 @@ public class wepScript : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
         {
             FireShot();
+            muzzleFlash.SetActive(true);
+        }
 
+        if(Input.GetMouseButtonUp(0))
+        {
+            muzzleFlash.SetActive(false);
         }
 
         if (fireTimer < fireRate)
