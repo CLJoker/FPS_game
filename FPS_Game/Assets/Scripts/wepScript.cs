@@ -13,6 +13,10 @@ public class wepScript : MonoBehaviour {
     [SerializeField] private float fireRate = 0.1f;
     [SerializeField] private GameObject muzzleFlash;
 
+    private int currentBullets = 30;
+    private int currentTotalBullets = 120;
+    private float reloadTime = 2f;
+
     private PhotonView photonView;
     private float fireTimer;
 
@@ -21,15 +25,41 @@ public class wepScript : MonoBehaviour {
         photonView = GetComponent<PhotonView>();
     }
 
+    private void OnGUI()
+    {
+        if (photonView.isMine)
+        {
+            GUI.Box(new Rect(400, 280, 100, 25), currentBullets + "/" + currentTotalBullets);
+        }
+    }
+
     private void Update()
     {
-        if (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && currentBullets > 0)
         {
             FireShot();
             muzzleFlash.SetActive(true);
+
+ 
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0) && currentBullets > 0)
+        {
+            FireShot();
+            muzzleFlash.SetActive(true);
+
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            if(currentBullets < 30)
+            {
+                StartCoroutine(ReloadWeapon());
+            }
+        }
+
+
+        if (Input.GetMouseButtonUp(0) || currentBullets <= 0)
         {
             muzzleFlash.SetActive(false);
         }
@@ -55,7 +85,7 @@ public class wepScript : MonoBehaviour {
         if (fireTimer < fireRate) return;
 
         RaycastHit hit;
-
+        currentBullets -= 1;
         Ray ray = fpsCam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if (Physics.Raycast(ray, out hit, range))
@@ -76,5 +106,22 @@ public class wepScript : MonoBehaviour {
         fireTimer = 0.0f;
 
         //Debug.Log(hit.transform.name);
+    }
+
+    IEnumerator ReloadWeapon()
+    {
+        yield return new WaitForSeconds(reloadTime);
+        if(currentTotalBullets >= 30)
+        {
+            int numberBulletReload = 30 - currentBullets;
+            currentBullets = 30;
+            currentTotalBullets -= numberBulletReload;
+        }
+        else if(currentTotalBullets > 0)
+        {
+            currentBullets += currentTotalBullets;
+            currentTotalBullets = 0;
+        }
+
     }
 }
