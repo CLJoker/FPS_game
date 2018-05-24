@@ -12,6 +12,10 @@ public class wepScript : MonoBehaviour {
     [SerializeField] private Animator anim;
     [SerializeField] private float fireRate = 0.1f;
     [SerializeField] private GameObject muzzleFlash;
+    [SerializeField] private AudioClip shootSound;
+    [SerializeField] private AudioClip reload_ClipOut;
+    [SerializeField] private AudioClip reload_ClipIn;
+    private AudioSource audio;
 
     private int currentBullets = 30;
     private int currentTotalBullets = 120;
@@ -23,6 +27,8 @@ public class wepScript : MonoBehaviour {
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
+        audio = GetComponent<AudioSource>();
+
     }
 
     private void OnGUI()
@@ -84,13 +90,15 @@ public class wepScript : MonoBehaviour {
     {
         if (fireTimer < fireRate) return;
 
+        audio.clip = shootSound;
+        audio.Play();
         RaycastHit hit;
         currentBullets -= 1;
         Ray ray = fpsCam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if (Physics.Raycast(ray, out hit, range))
         {
-            if (photonView.isMine)
+            if (photonView.isMine && hit.transform != null && LayerMask.LayerToName(hit.transform.gameObject.layer) != "Player")
             {
                 GameObject bulletImpactHole = PhotonNetwork.Instantiate(bulletHole.name, hit.point, Quaternion.LookRotation(hit.normal), 0) as GameObject;
             }
@@ -110,8 +118,16 @@ public class wepScript : MonoBehaviour {
 
     IEnumerator ReloadWeapon()
     {
-        yield return new WaitForSeconds(reloadTime);
-        if(currentTotalBullets >= 30)
+        audio.clip = reload_ClipOut;
+        audio.Play();
+
+        yield return new WaitForSeconds(audio.clip.length * 2);
+
+        audio.clip = reload_ClipIn;
+        audio.Play();
+
+        yield return new WaitForSeconds(audio.clip.length * 2);
+        if (currentTotalBullets >= 30)
         {
             int numberBulletReload = 30 - currentBullets;
             currentBullets = 30;

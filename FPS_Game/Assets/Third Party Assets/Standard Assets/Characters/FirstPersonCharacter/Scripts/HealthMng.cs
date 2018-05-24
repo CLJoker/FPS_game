@@ -44,7 +44,7 @@ public class HealthMng : MonoBehaviour {
         {
             PhotonNetwork.Destroy(me);
             PhotonNetwork.Disconnect();
-            SceneManager.LoadScene("Main");
+            SceneManager.LoadScene("Main_Hangar");
         }
 
     }
